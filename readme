@@ -698,27 +698,7 @@ function updateSummaryAndCart() {
 
 // ========== TILE SELECTION LOGIC (refactored) ==========
 document.addEventListener("DOMContentLoaded", function() {
-  // Liability, PA, Tools
-  [
-    "#liability-limit-options .option",
-    "#personal-accident-section-pricing .option",
-    "#personal-accident-section-generic .option",
-    "#tools-section .option",
-    "#extras-section .option"
-  ].forEach(sel => {
-    document.querySelectorAll(sel).forEach(opt => {
-      opt.addEventListener("click", function() {
-        // Unselect all siblings in its group except 'extras'
-        if (!opt.closest("#extras-section")) {
-          opt.closest(".option-group").querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
-          opt.classList.add("selected");
-        } else {
-          opt.classList.toggle("selected");
-        }
-        updateSummaryAndCart();
-      });
-    });
-  });
+  // Event listeners are now handled by setupTile function below to avoid conflicts
 
 
 </script>
@@ -2577,27 +2557,7 @@ function updateProgress() {
 
 // ========== TILE SELECTION LOGIC (refactored) ==========
 document.addEventListener("DOMContentLoaded", function() {
-  // Liability, PA, Tools
-  [
-    "#liability-limit-options .option",
-    "#personal-accident-section-pricing .option",
-    "#personal-accident-section-generic .option",
-    "#tools-section .option",
-    "#extras-section .option"
-  ].forEach(sel => {
-    document.querySelectorAll(sel).forEach(opt => {
-      opt.addEventListener("click", function() {
-        // Unselect all siblings in its group except 'extras'
-        if (!opt.closest("#extras-section")) {
-          opt.closest(".option-group").querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
-          opt.classList.add("selected");
-        } else {
-          opt.classList.toggle("selected");
-        }
-        updateSummaryAndCart();
-      });
-    });
-  });
+  // Event listeners moved to setupTile function to avoid conflicts
 
   // Initial cart build
   updateSummaryAndCart();
