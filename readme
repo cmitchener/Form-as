@@ -1501,38 +1501,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const label20 = document.getElementById("label20");
 
     if (result) {
-      const m5  = Math.round(result["5M"]  / 8 * 1.1);
-      const m10 = Math.round(result["10M"] / 8 * 1.1);
-      const m20 = Math.round(result["20M"] / 8 * 1.1);
+      const monthly5  = Math.round(result["5M"]  / 8 * 1.1);
+      const monthly10 = Math.round(result["10M"] / 8 * 1.1);
+      const monthly20 = Math.round(result["20M"] / 8 * 1.1);
 
-      label5.innerHTML  = `<div><div class="cover-heading">Add $5M Liability Cover</div><div><strong>$${result["5M"]}</strong> annually</div><div>or <strong>$${m5}</strong> × 8 monthly</div></div>`;
-      label10.innerHTML = `<div><div class="cover-heading">Add $10M Liability Cover</div><div><strong>$${result["10M"]}</strong> annually</div><div>or <strong>$${m10}</strong> × 8 monthly</div></div>`;
-      label20.innerHTML = `<div><div class="cover-heading">Add $20M Liability Cover</div><div><strong>$${result["20M"]}</strong> annually</div><div>or <strong>$${m20}</strong> × 8 monthly</div></div>`;
+      label5.innerHTML  = `<div><div class="cover-heading">Add $5M Liability Cover</div><div><strong>$${result["5M"]}</strong> annually</div><div>or <strong>$${monthly5}</strong> × 8 monthly</div></div>`;
+      label10.innerHTML = `<div><div class="cover-heading">Add $10M Liability Cover</div><div><strong>$${result["10M"]}</strong> annually</div><div>or <strong>$${monthly10}</strong> × 8 monthly</div></div>`;
+      label20.innerHTML = `<div><div class="cover-heading">Add $20M Liability Cover</div><div><strong>$${result["20M"]}</strong> annually</div><div>or <strong>$${monthly20}</strong> × 8 monthly</div></div>`;
 
       // save to hidden fields
-      const f5  = document.getElementById("tfa_3892");
-      const f10 = document.getElementById("tfa_3894");
-      const f20 = document.getElementById("tfa_3896");
-            document.getElementById("tfa_3879").value = "Yes";
-
-    document.getElementById("tfa_6269").value = monthly5;
-document.getElementById("tfa_6271").value = monthly10;
-document.getElementById("tfa_6273").value = monthly20;  
-      
-      if (f5)  f5.value  = result["5M"];
-      if (f10) f10.value = result["10M"];
-      if (f20) f20.value = result["20M"];
+      document.getElementById("tfa_3879").value = "Yes";
+      document.getElementById("tfa_3892").value = result["5M"];
+      document.getElementById("tfa_3894").value = result["10M"];
+      document.getElementById("tfa_3896").value = result["20M"];
+      document.getElementById("tfa_6269").value = monthly5;
+      document.getElementById("tfa_6271").value = monthly10;
+      document.getElementById("tfa_6273").value = monthly20;
     } else {
       label5.textContent  = "Request Quote – $5M Public Liability Cover";
       label10.textContent = "Request Quote – $10M Public Liability Cover";
       label20.textContent = "Request Quote – $20M Public Liability Cover";
 
-        document.getElementById("tfa_3879").value = "No";
-      if (fallbackCta) fallbackCta.style.display = "block";
-    }
+      document.getElementById("tfa_3879").value = "No";
       
       // clear hidden price fields
-      ["tfa_3892","tfa_3894","tfa_3896"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+      ["tfa_3892","tfa_3894","tfa_3896","tfa_6269","tfa_6271","tfa_6273"].forEach(id => { 
+        const el = document.getElementById(id); 
+        if (el) el.value = ""; 
+      });
     }
 
     updateSummaryAndCart();
@@ -1542,6 +1538,9 @@ document.getElementById("tfa_6273").value = monthly20;
   ["#tfa_4","#tfa_3883","#tfa_68","#tfa_72","#tfa_3990"].forEach(sel=>{
     document.querySelector(sel)?.addEventListener("change", calculateInstantPricing);
   });
+  
+  // Initialize pricing calculation after page load
+  setTimeout(calculateInstantPricing, 400);
 
   /* ---------- Personal Accident visibility (priced vs generic) ---------- */
   function togglePersonalAccident() {
@@ -2249,70 +2248,9 @@ document.addEventListener("DOMContentLoaded", () => {
 };
 
   /* === Instant Pricing Calculation === */
-  function calculateInstantPricing() {
-    const occupation = document.querySelector('#tfa_4')?.value?.trim();
-    const state = document.querySelector('#tfa_3883')?.selectedOptions[0]?.text.trim();
-    const turnoverRaw = document.querySelector('#tfa_68')?.value?.trim();
-    const employeesRaw = document.querySelector('#tfa_72')?.value?.trim();
-    const subbieRaw = document.querySelector('#tfa_3990')?.value?.trim();
+  // Duplicate function removed - using consolidated version above
 
-    // Turnover
-    const turnoverVal = parseFloat((turnoverRaw || "").replace(/[^0-9.]/g, ''));
-    let turnover = "";
-    if (!isNaN(turnoverVal)) {
-      if (turnoverVal <= 100000) turnover = "Up to $100k";
-      else if (turnoverVal <= 250000) turnover = "Up to $250k";
-      else turnover = "Up to $500k";
-    }
-
-    // Employees
-    const employeesVal = parseInt((employeesRaw || "").replace(/[^0-9]/g, ''), 10);
-    let employees = employeesVal <= 2 ? "1-2" : employeesVal <= 4 ? "3-4" : "5+";
-
-    // Subbies
-    const subbieVal = parseFloat((subbieRaw || "").replace(/[^0-9.]/g, ''));
-    let subcontractors = "No", subbieAmount = "None";
-    if (!isNaN(subbieVal) && subbieVal > 0) {
-      subcontractors = "Yes";
-      if (subbieVal < 50000) subbieAmount = "Under $50k";
-      else if (subbieVal <= 100000) subbieAmount = "$50k to $100k";
-      else subbieAmount = "Over $100k";
-    }
-
-    const key = `${occupation}-${state}-${turnover}-${subcontractors}-${employees}-${subbieAmount}`;
-    const result = pricingTable[key];
-
-    const label5 = document.querySelector('#label5');
-    const label10 = document.querySelector('#label10');
-    const label20 = document.querySelector('#label20');
-
-    if (result) {
-      const monthly5 = Math.round(result["5M"] / 8 * 1.1);
-      const monthly10 = Math.round(result["10M"] / 8 * 1.1);
-      const monthly20 = Math.round(result["20M"] / 8 * 1.1);
-
-       label5.innerHTML = `<div class="cover-option"><div class="cover-heading">$5M Liability Cover</div><div class="cover-price"><strong>$${result["5M"]}</strong> annually</div><div class="cover-price-alt">or <strong>$${monthly5}</strong> × 8 monthly</div><div class="option-cta add">Add Cover</div></div>`;
-    label10.innerHTML = `<div class="cover-option"><div class="cover-heading">$10M Liability Cover</div><div class="cover-price"><strong>$${result["10M"]}</strong> annually</div><div class="cover-price-alt">or <strong>$${monthly10}</strong> × 8 monthly</div><div class="option-cta add">Add Cover</div></div>`;
-    label20.innerHTML = `<div class="cover-option"><div class="cover-heading">$20M Liability Cover</div><div class="cover-price"><strong>$${result["20M"]}</strong> annually</div><div class="cover-price-alt">or <strong>$${monthly20}</strong> × 8 monthly</div><div class="option-cta add">Add Cover</div></div>`;
-  
-      document.getElementById("tfa_3892").value = result["5M"];
-      document.getElementById("tfa_3894").value = result["10M"];
-      document.getElementById("tfa_3896").value = result["20M"];
-      document.getElementById("tfa_6269").value = monthly5;
-document.getElementById("tfa_6271").value = monthly10;
-document.getElementById("tfa_6273").value = monthly20;
-      document.getElementById("tfa_3879").value = Yes;
-    } else {
-    label5.innerHTML = `$5M Public Liability Cover<div class="option-cta request">Request Quote</div>`;
-    label10.innerHTML = `$10M Public Liability Cover<div class="option-cta request">Request Quote</div>`;
-    label20.innerHTML = `$20M Public Liability Cover<div class="option-cta request">Request Quote</div>`;
-  }
-
-    document.getElementById("instant-pricing-container").style.display = "block";
-    document.getElementById("instant-price-btn").style.display = "none";
-  }
-
-  document.getElementById("instant-price-btn")?.addEventListener("click", calculateInstantPricing);
+  // Orphaned event listener removed - using consolidated version above
 
   /* === Liability Option Click Sync Radios === */
   document.querySelectorAll('#liability-limit-options .option').forEach(opt => {
@@ -2635,100 +2573,7 @@ function updateProgress() {
 // This should be placed after your <table id="cart-summary"> in your HTML
 // and after all the "tile selection" logic in your <script>
 
-function updateSummaryAndCart() {
-  const body = document.getElementById("cart-body");
-  body.innerHTML = "";
-
-  // === Liability ===
-  const liab = document.querySelector('#liability-limit-options .option.selected');
-  if (liab) {
-    const cover = liab.textContent.trim();
-    let ann="Quote Requested", mon="";
-    if (cover.includes("5M") && document.getElementById("tfa_3892").value) {
-      ann = `$${document.getElementById("tfa_3892").value}`;
-      mon = `$${document.getElementById("tfa_6269").value} × 8`;
-    }
-    if (cover.includes("10M") && document.getElementById("tfa_3894").value) {
-      ann = `$${document.getElementById("tfa_3894").value}`;
-      mon = `$${document.getElementById("tfa_6271").value} × 8`;
-    }
-    if (cover.includes("20M") && document.getElementById("tfa_3896").value) {
-      ann = `$${document.getElementById("tfa_3896").value}`;
-      mon = `$${document.getElementById("tfa_6273").value} × 8`;
-    }
-    body.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td style="padding:8px; border:1px solid #ddd;">Public Liability</td>
-        <td style="padding:8px; border:1px solid #ddd;">${cover}</td>
-        <td style="padding:8px; border:1px solid #ddd;">${ann}</td>
-        <td style="padding:8px; border:1px solid #ddd;">${mon}</td>
-      </tr>
-    `);
-  }
-
-  // === Personal Accident ===
-  const pa = document.querySelector('#personal-accident-section-pricing .option.selected, #personal-accident-section-generic .option.selected');
-  if (pa) {
-    const cover = pa.textContent.trim();
-    let ann = "", mon = "";
-    if (cover.includes("1,000")) {
-      ann = "$1,030";
-      mon = "$142 × 8";
-    }
-    if (cover.includes("1,500")) {
-      ann = "$1,555";
-      mon = "$214 × 8";
-    }
-    // For "Not Required" or "Request" just show the name, no price
-    body.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td style="padding:8px; border:1px solid #ddd;">Personal Accident</td>
-        <td style="padding:8px; border:1px solid #ddd;">${cover}</td>
-        <td style="padding:8px; border:1px solid #ddd;">${ann}</td>
-        <td style="padding:8px; border:1px solid #ddd;">${mon}</td>
-      </tr>
-    `);
-  }
-
-  // === General Property/Tools ===
-  const tools = document.querySelector('#tools-section .option.selected');
-  if (tools) {
-    const cover = tools.textContent.trim();
-    let ann = "", mon = "";
-    if (cover.includes("5,000")) {
-      ann = "$455";
-      mon = "$63 × 8";
-    }
-    if (cover.includes("7,500")) {
-      ann = "$585";
-      mon = "$81 × 8";
-    }
-    body.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td style="padding:8px; border:1px solid #ddd;">General Property (Tools)</td>
-        <td style="padding:8px; border:1px solid #ddd;">${cover}</td>
-        <td style="padding:8px; border:1px solid #ddd;">${ann}</td>
-        <td style="padding:8px; border:1px solid #ddd;">${mon}</td>
-      </tr>
-    `);
-  }
-
-  // === Additional Insurances (Extras) ===
-  const extras = [];
-  document.querySelectorAll('#extras-section .option.selected').forEach(opt => {
-    extras.push(opt.textContent.trim());
-  });
-  if (extras.length) {
-    body.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td style="padding:8px; border:1px solid #ddd;">Additional Covers</td>
-        <td style="padding:8px; border:1px solid #ddd;">${extras.join(", ")}</td>
-        <td style="padding:8px; border:1px solid #ddd;">--</td>
-        <td style="padding:8px; border:1px solid #ddd;">--</td>
-      </tr>
-    `);
-  }
-}
+// Duplicate function removed - using consolidated version at line 604
 
 // ========== TILE SELECTION LOGIC (refactored) ==========
 document.addEventListener("DOMContentLoaded", function() {
@@ -3398,71 +3243,7 @@ document.addEventListener("DOMContentLoaded", () => {
   "Plumber-WA-Up to $500k-No-3-4-None": { "5M": 965, "10M": 1095, "20M": 1600 }   // ❌ you had a semicolon here
 };
 
-  function calculateInstantPricing() {
-    const occupation = document.querySelector('#tfa_4')?.value?.trim();
-    const state = document.querySelector('#tfa_3883')?.selectedOptions[0]?.text.trim();
-    const turnoverRaw = document.querySelector('#tfa_68')?.value?.trim();
-    const employeesRaw = document.querySelector('#tfa_72')?.value?.trim();
-    const subbieRaw = document.querySelector('#tfa_3990')?.value?.trim();
-
-    // Turnover
-    const turnoverVal = parseFloat((turnoverRaw || "").replace(/[^0-9.]/g,''));
-    let turnover = "";
-    if (!isNaN(turnoverVal)) {
-      if (turnoverVal <= 100000) turnover = "Up to $100k";
-      else if (turnoverVal <= 250000) turnover = "Up to $250k";
-      else turnover = "Up to $500k";
-    }
-
-    // Employees
-    const employeesVal = parseInt((employeesRaw || "").replace(/[^0-9]/g,''),10);
-    let employees = employeesVal <= 2 ? "1-2" : employeesVal <= 4 ? "3-4" : "5+";
-
-    // Subbies
-    const subbieVal = parseFloat((subbieRaw || "").replace(/[^0-9.]/g,''));
-    let subcontractors="No", subbieAmount="None";
-    if (!isNaN(subbieVal) && subbieVal>0) {
-      subcontractors="Yes";
-      if (subbieVal<50000) subbieAmount="Under $50k";
-      else if (subbieVal<=100000) subbieAmount="$50k to $100k";
-      else subbieAmount="Over $100k";
-    }
-
-    const key = `${occupation}-${state}-${turnover}-${subcontractors}-${employees}-${subbieAmount}`;
-    const result = pricingTable[key];
-
-    const label5=document.getElementById("label5"),
-          label10=document.getElementById("label10"),
-          label20=document.getElementById("label20");
-
-    if(result){
-      const monthly5=Math.round(result["5M"]/8*1.1);
-      const monthly10=Math.round(result["10M"]/8*1.1);
-      const monthly20=Math.round(result["20M"]/8*1.1);
-
-      label5.textContent=`$5M Public Liability – $${result["5M"]}`;
-      label10.textContent=`$10M Public Liability – $${result["10M"]}`;
-      label20.textContent=`$20M Public Liability – $${result["20M"]}`;
-
-      document.getElementById("tfa_3892").value=result["5M"];
-      document.getElementById("tfa_3894").value=result["10M"];
-      document.getElementById("tfa_3896").value=result["20M"];
-
-      document.getElementById("tfa_6269").value=monthly5;
-      document.getElementById("tfa_6271").value=monthly10;
-      document.getElementById("tfa_6273").value=monthly20;
-    } else {
-      label5.textContent="Request Quote – $5M Public Liability";
-      label10.textContent="Request Quote – $10M Public Liability";
-      label20.textContent="Request Quote – $20M Public Liability";
-
-      ["3892","3894","3896","6269","6271","6273"].forEach(id=>{
-        const f=document.getElementById("tfa_"+id);
-        if(f) f.value="";
-      });
-    }
-
-  
+  // Duplicate function removed - using consolidated version below
 </script>
 </strong>
 
@@ -3962,71 +3743,8 @@ document.addEventListener("DOMContentLoaded", () => {
   "Plumber-WA-Up to $500k-No-3-4-None": { "5M": 965, "10M": 1095, "20M": 1600 }   // ❌ you had a semicolon here
 };
 
-  function calculateInstantPricing() {
-    const occupation = document.querySelector('#tfa_4')?.value?.trim();
-    const state = document.querySelector('#tfa_3883')?.selectedOptions[0]?.text.trim();
-    const turnoverRaw = document.querySelector('#tfa_68')?.value?.trim();
-    const employeesRaw = document.querySelector('#tfa_72')?.value?.trim();
-    const subbieRaw = document.querySelector('#tfa_3990')?.value?.trim();
-
-    // Turnover
-    const turnoverVal = parseFloat((turnoverRaw || "").replace(/[^0-9.]/g,''));
-    let turnover = "";
-    if (!isNaN(turnoverVal)) {
-      if (turnoverVal <= 100000) turnover = "Up to $100k";
-      else if (turnoverVal <= 250000) turnover = "Up to $250k";
-      else turnover = "Up to $500k";
-    }
-
-    // Employees
-    const employeesVal = parseInt((employeesRaw || "").replace(/[^0-9]/g,''),10);
-    let employees = employeesVal <= 2 ? "1-2" : employeesVal <= 4 ? "3-4" : "5+";
-
-    // Subbies
-    const subbieVal = parseFloat((subbieRaw || "").replace(/[^0-9.]/g,''));
-    let subcontractors="No", subbieAmount="None";
-    if (!isNaN(subbieVal) && subbieVal>0) {
-      subcontractors="Yes";
-      if (subbieVal<50000) subbieAmount="Under $50k";
-      else if (subbieVal<=100000) subbieAmount="$50k to $100k";
-      else subbieAmount="Over $100k";
-    }
-
-    const key = `${occupation}-${state}-${turnover}-${subcontractors}-${employees}-${subbieAmount}`;
-    const result = pricingTable[key];
-
-    const label5=document.getElementById("label5"),
-          label10=document.getElementById("label10"),
-          label20=document.getElementById("label20");
-
-    if(result){
-      const monthly5=Math.round(result["5M"]/8*1.1);
-      const monthly10=Math.round(result["10M"]/8*1.1);
-      const monthly20=Math.round(result["20M"]/8*1.1);
-
-      label5.textContent=`Add $5M Liability Cover – $${result["5M"]} annually / $${monthly5} ×8 monthly`;
-      label10.textContent=`Add $10M Liability Cover – $${result["10M"]} annually / $${monthly10} ×8 monthly`;
-      label20.textContent=`Add $20M Liability Cover – $${result["20M"]} annually / $${monthly20} ×8 monthly`;
-
-      document.getElementById("tfa_3892").value=result["5M"];
-      document.getElementById("tfa_3894").value=result["10M"];
-      document.getElementById("tfa_3896").value=result["20M"];
-      document.getElementById("tfa_6269").value = monthly5;
-document.getElementById("tfa_6271").value = monthly10;
-document.getElementById("tfa_6273").value = monthly20;
-      document.getElementById("tfa_3879").value = Yes;
-    } else {
-      label5.textContent="Request Quote – $5M Public Liability Cover";
-      label10.textContent="Request Quote – $10M Public Liability Cover";
-      label20.textContent="Request Quote – $20M Public Liability Cover";
-    }
-
-    updateSummaryAndCart();
-  }
-  ["#tfa_4","#tfa_3883","#tfa_68","#tfa_72","#tfa_3990"].forEach(sel=>{
-    document.querySelector(sel)?.addEventListener("change",calculateInstantPricing);
-  });
-  setTimeout(calculateInstantPricing,400);
+  // Duplicate function removed - using consolidated version above
+  // Orphaned event listeners removed - using consolidated version above
 
   /* ========== TILE SELECTION LOGIC ========== */
   function setupTile(groupSelector,mapping){
