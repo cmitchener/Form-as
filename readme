@@ -698,27 +698,7 @@ function updateSummaryAndCart() {
 
 // ========== TILE SELECTION LOGIC (refactored) ==========
 document.addEventListener("DOMContentLoaded", function() {
-  // Liability, PA, Tools
-  [
-    "#liability-limit-options .option",
-    "#personal-accident-section-pricing .option",
-    "#personal-accident-section-generic .option",
-    "#tools-section .option",
-    "#extras-section .option"
-  ].forEach(sel => {
-    document.querySelectorAll(sel).forEach(opt => {
-      opt.addEventListener("click", function() {
-        // Unselect all siblings in its group except 'extras'
-        if (!opt.closest("#extras-section")) {
-          opt.closest(".option-group").querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
-          opt.classList.add("selected");
-        } else {
-          opt.classList.toggle("selected");
-        }
-        updateSummaryAndCart();
-      });
-    });
-  });
+  // Event listeners are now handled by setupTile function below to avoid conflicts
 
 
 </script>
@@ -2577,27 +2557,7 @@ function updateProgress() {
 
 // ========== TILE SELECTION LOGIC (refactored) ==========
 document.addEventListener("DOMContentLoaded", function() {
-  // Liability, PA, Tools
-  [
-    "#liability-limit-options .option",
-    "#personal-accident-section-pricing .option",
-    "#personal-accident-section-generic .option",
-    "#tools-section .option",
-    "#extras-section .option"
-  ].forEach(sel => {
-    document.querySelectorAll(sel).forEach(opt => {
-      opt.addEventListener("click", function() {
-        // Unselect all siblings in its group except 'extras'
-        if (!opt.closest("#extras-section")) {
-          opt.closest(".option-group").querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
-          opt.classList.add("selected");
-        } else {
-          opt.classList.toggle("selected");
-        }
-        updateSummaryAndCart();
-      });
-    });
-  });
+  // Event listeners moved to setupTile function to avoid conflicts
 
   // Initial cart build
   updateSummaryAndCart();
@@ -2640,26 +2600,26 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
   <div class="section-body option-group">
     <div class="option" data-field="insurance_personal_accident_1000">
-      <div class="option-label"><strong> $1,000 p/w Income Cover&lt;,strong&gt;</strong></div><strong>
-         <div class="option-subtext">
-          <strong>$1,030 annually</strong> or <br>
-          <strong>$142 x 8 monthly instalments </strong>
-        </div>
-         <div class="option-action"> ➕ Add $1,000 Personal Accident Cover</div>
-    </strong></div><strong>
+      <div class="option-label"><strong>$1,000 p/w Income Cover</strong></div>
+      <div class="option-subtext">
+        <strong>$1,030 annually</strong> or <br>
+        <strong>$142 x 8 monthly instalments</strong>
+      </div>
+      <div class="option-action">➕ Add $1,000 Personal Accident Cover</div>
+    </div>
     <div class="option" data-field="insurance_personal_accident_1500">
-      <div class="option-label"><strong>$1,500 p/w Income Cover</strong>strong&gt;</div>
-              <div class="option-subtext">
-          <strong>$1,555 annually</strong> <br>
-          or <strong>$214 x 8 monthly instalments </strong>
-        <div class="option-action"> ➕ Add $1,500 Personal Accident Cover</div>
-              </div>
+      <div class="option-label"><strong>$1,500 p/w Income Cover</strong></div>
+      <div class="option-subtext">
+        <strong>$1,555 annually</strong> <br>
+        or <strong>$214 x 8 monthly instalments</strong>
+      </div>
+      <div class="option-action">➕ Add $1,500 Personal Accident Cover</div>
     </div>
     <div class="option" data-field="insurance_personal_accident_notrequired">
       <div class="option-label">Not Required</div>
     </div>
-  </strong></div><strong>
-</strong></div><strong>
+  </div>
+</div>
 
 <div id="personal-accident-section-generic" class="section" style="display:none;">
   <div class="section-header">Click Here To Add Personal Accident Insurance</div>
@@ -2670,7 +2630,7 @@ document.addEventListener("DOMContentLoaded", function() {
       ✓ Choose your preferred weekly income cover<br><br>
     </div>
     <div class="option" data-field="insurance_personal_accident_request">
-      <div class="option-label"><strong>Request a quotation for Personal Accident and Sickness</strong>strong&gt;</div>
+      <div class="option-label"><strong>Request a quotation for Personal Accident and Sickness</strong></div>
     </div>
     <div class="option" data-field="insurance_personal_accident_notrequired">
       <div class="option-label">Not Required</div>
@@ -2688,18 +2648,18 @@ document.addEventListener("DOMContentLoaded", function() {
       ✓ Choose your preferred amount of cover  
     </div>
     <div class="option" data-field="insurance_general_property_5000">
-      <div class="option-label"><strong>$5,000 Tools Cover</strong>strong&gt;</div>
-          <div class="option-subtext">
-<strong>$455 annually</strong> <br> or <strong>$63 x 8 monthly instalments</strong> 
-        </div>
-        <div class="option-action"> ➕ Add $5,000 Tools Cover</div>
+      <div class="option-label"><strong>$5,000 Tools Cover</strong></div>
+      <div class="option-subtext">
+        <strong>$455 annually</strong> <br> or <strong>$63 x 8 monthly instalments</strong>
+      </div>
+      <div class="option-action">➕ Add $5,000 Tools Cover</div>
     </div>
     <div class="option" data-field="insurance_general_property_7500">
-      <div class="option-label"><strong>$7,500 Tools Cover</strong>strong&gt;</div>
-         <div class="option-subtext">
-<strong>$585 annually</strong> <br> or <strong>$81 x 8 monthly instalments </strong> 
-        </div>
-          <div class="option-action"> ➕ Add $7,5000 Tools Cover</div>
+      <div class="option-label"><strong>$7,500 Tools Cover</strong></div>
+      <div class="option-subtext">
+        <strong>$585 annually</strong> <br> or <strong>$81 x 8 monthly instalments</strong>
+      </div>
+      <div class="option-action">➕ Add $7,500 Tools Cover</div>
     </div>
     <div class="option" data-field="insurance_general_property_notrequired">
       <div class="option-label">Not Required</div>
@@ -2709,7 +2669,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 <div class="section" id="extras-section">
-  <div class="section-header"><strong>Click Here To Add Other Common Tradie Covers</strong>strong&gt;</div>
+  <div class="section-header"><strong>Click Here To Add Other Common Tradie Covers</strong></div>
   <div class="section-body option-group">
     <div class="option" data-field="insurance_commercial_motor">Commercial Motor</div>
     <div class="option" data-field="insurance_transit">Transit</div>
@@ -4620,7 +4580,7 @@ document.addEventListener("DOMContentLoaded", () => {
    el.addEventListener("change", toggleInstantSection);
  });
 });
-</script></strong></div></div>
+</script></div></div>
 <div id="tfa_6420" class="section group">
 <div class="oneField field-container-D  labelsAbove  " id="tfa_3643-D">
 <label id="tfa_3643-L" class="label preField " for="tfa_3643"><span style="font-size: 14.5px;"><b>How would you like to proceed?</b><br></span></label><br><div class="inputWrapper"><select id="tfa_3643" name="tfa_3643" title="How would you like to proceed?" class=""><option value="">Please select...</option>
