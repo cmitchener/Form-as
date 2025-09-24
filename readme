@@ -1538,6 +1538,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ["#tfa_4","#tfa_3883","#tfa_68","#tfa_72","#tfa_3990"].forEach(sel=>{
     document.querySelector(sel)?.addEventListener("change", calculateInstantPricing);
   });
+  
+  // Initialize pricing calculation after page load
+  setTimeout(calculateInstantPricing, 400);
 
   /* ---------- Personal Accident visibility (priced vs generic) ---------- */
   function togglePersonalAccident() {
@@ -2245,9 +2248,9 @@ document.addEventListener("DOMContentLoaded", () => {
 };
 
   /* === Instant Pricing Calculation === */
-  // Duplicate function removed - using consolidated version below
+  // Duplicate function removed - using consolidated version above
 
-  document.getElementById("instant-price-btn")?.addEventListener("click", calculateInstantPricing);
+  // Orphaned event listener removed - using consolidated version above
 
   /* === Liability Option Click Sync Radios === */
   document.querySelectorAll('#liability-limit-options .option').forEach(opt => {
@@ -3740,11 +3743,8 @@ document.addEventListener("DOMContentLoaded", () => {
   "Plumber-WA-Up to $500k-No-3-4-None": { "5M": 965, "10M": 1095, "20M": 1600 }   // ❌ you had a semicolon here
 };
 
-  // Duplicate function removed - using consolidated version below
-  ["#tfa_4","#tfa_3883","#tfa_68","#tfa_72","#tfa_3990"].forEach(sel=>{
-    document.querySelector(sel)?.addEventListener("change",calculateInstantPricing);
-  });
-  setTimeout(calculateInstantPricing,400);
+  // Duplicate function removed - using consolidated version above
+  // Orphaned event listeners removed - using consolidated version above
 
   /* ========== TILE SELECTION LOGIC ========== */
   function setupTile(groupSelector,mapping){
